@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/BossSelect.gd" id="1"]
+
+[node name="BossSelect" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 60.0
+offset_right = 220.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 0.85, 0.45, 1)
+text = "Choose Your Challenge"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 96.0
+offset_right = 220.0
+offset_bottom = 120.0
+text = "Use Up/Down and Enter, or click"
+horizontal_alignment = 1
+modulate = Color(1, 1, 1, 0.6)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -125.0
+offset_right = 180.0
+offset_bottom = 125.0
+
+[node name="BruteButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(360, 70)
+text = "The Brute
+Melee slams + ranged spread volleys"
+
+[node name="WarhammerButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(360, 70)
+text = "Warhammer
+Pure melee — shockwave slams + punch combos"
+
+[node name="SwarmButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(360, 70)
+text = "The Swarmcaller
+Keeps its distance and summons minions"
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 116.0
+offset_bottom = 52.0
+text = "< Back"

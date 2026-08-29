@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/Arena.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/UI/HUD.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/UI/LevelUpMenu.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/UI/EndScreen.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/UI/PauseMenu.tscn" id="7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1600, 64)
+
+[node name="Arena" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+position = Vector2(576, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="Ground"]
+offset_left = -800.0
+offset_top = -32.0
+offset_right = 800.0
+offset_bottom = 32.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(250, 460)
+
+[node name="BossSpawn" type="Marker2D" parent="."]
+position = Vector2(850, 460)
+
+[node name="HUD" parent="." instance=ExtResource("4")]
+
+[node name="LevelUpMenu" parent="." instance=ExtResource("5")]
+
+[node name="EndScreen" parent="." instance=ExtResource("6")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("7")]

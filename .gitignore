@@ -1,0 +1,9 @@
+# Godot 4 editor-generated cache/import files
+.godot/
+
+# macOS
+.DS_Store
+
+# Export artifacts you don't want tracked (docs/ for GitHub Pages is intentionally NOT ignored)
+export/
+*.pck
