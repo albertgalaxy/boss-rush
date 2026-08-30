@@ -14,6 +14,7 @@ script = ExtResource("1")
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Sprite" type="ColorRect" parent="."]
+mouse_filter = 2
 offset_left = -25.0
 offset_top = -13.0
 offset_right = 25.0

@@ -80,6 +80,7 @@ value = 0.0
 show_percentage = false
 
 [node name="AbilityRow" type="HBoxContainer" parent="Root"]
+mouse_filter = 2
 offset_left = 20.0
 offset_top = 88.0
 offset_right = 320.0

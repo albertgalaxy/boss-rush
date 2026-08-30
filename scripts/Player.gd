@@ -77,6 +77,7 @@ var _charge_time := 0.0
 var _charged_attack_active := false
 var _charged_damage := 0
 var _charged_fraction := 0.0
+var _suppress_screen_flash := false
 var _lunge_velocity := 0.0
 var _quick_cooldown_timer := 0.0
 var _time_since_damaged := 999.0
@@ -88,6 +89,7 @@ var _time_since_damaged := 999.0
 @onready var mana_shield_visual: Node2D = $ManaShieldVisual
 @onready var charge_visual: Node2D = $ChargeVisual
 @onready var swing_visual: Node2D = $SwingVisual
+@onready var cooldown_visual: Node2D = $CooldownVisual
 
 func _ready() -> void:
 	add_to_group("player")
@@ -149,12 +151,18 @@ func _handle_jump() -> void:
 func _tick_timers(delta: float) -> void:
 	if _attack_cooldown_timer > 0.0:
 		_attack_cooldown_timer -= delta
+	if _attack_cooldown_timer > 0.0 and attack_cooldown > 0.0:
+		cooldown_visual.visible = true
+		cooldown_visual.fraction = 1.0 - clampf(_attack_cooldown_timer / attack_cooldown, 0.0, 1.0)
+	else:
+		cooldown_visual.visible = false
 	if _attack_timer > 0.0:
 		_attack_timer -= delta
 		if _attack_timer <= 0.0:
 			attack_area.monitoring = false
 			if _charged_attack_active:
 				_charged_attack_active = false
+				_suppress_screen_flash = false
 				attack_shape.scale = Vector2(1.6, 2.0) if cleave else Vector2.ONE
 	if _charging:
 		_charge_time = min(_charge_time + delta, CHARGE_MAX_TIME)
@@ -226,6 +234,7 @@ func _do_flicker_strike() -> void:
 	_charged_damage = int(attack_damage * 0.5)
 	_charged_attack_active = true
 	_charged_fraction = 0.0
+	_suppress_screen_flash = true
 	attack_shape.scale = Vector2(1.6, 2.0) if cleave else Vector2.ONE
 	_attack_timer = ATTACK_DURATION * 0.6
 	attack_area.monitoring = true
@@ -336,7 +345,8 @@ func _on_attack_area_body_entered(body: Node) -> void:
 		var f := _charged_fraction
 		Juice.shake(camera, 4.0 + f * 6.0, 0.12 + f * 0.1)
 		Juice.hitstop(0.04 + f * 0.05, 0.05)
-		Juice.screen_flash(Color(1, 0.6, 0.15, 0.15 + f * 0.15), 0.12)
+		if not _suppress_screen_flash:
+			Juice.screen_flash(Color(1, 0.6, 0.15, 0.15 + f * 0.15), 0.12)
 	else:
 		_deal_hit(body)
 
@@ -394,7 +404,10 @@ func _deal_hit(body: Node, override_dmg: int = -1) -> void:
 			if not is_ranged:
 				swing_visual.play(0.12, _facing, Color(1, 1, 1, 0.75), 40.0)
 	if not ("grants_xp" in body) or body.grants_xp:
-		gain_xp(max(1, int(total_dmg_dealt / 5.0)))
+		var xp_gain := maxi(1, int(total_dmg_dealt / 5.0))
+		if GameManager.endless_depth > 0:
+			xp_gain = maxi(1, int(xp_gain * 0.5))
+		gain_xp(xp_gain)
 
 func take_damage(amount: int, attacker: Node = null) -> void:
 	if invincible:

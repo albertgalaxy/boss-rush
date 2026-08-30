@@ -15,6 +15,7 @@ max_hp = 15
 shape = SubResource("RectangleShape2D_body")
 
 [node name="Sprite" type="ColorRect" parent="."]
+mouse_filter = 2
 offset_left = -10.0
 offset_top = -14.0
 offset_right = 10.0

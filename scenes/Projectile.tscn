@@ -14,6 +14,7 @@ script = ExtResource("1")
 shape = SubResource("CircleShape2D_1")
 
 [node name="Sprite" type="ColorRect" parent="."]
+mouse_filter = 2
 offset_left = -6.0
 offset_top = -6.0
 offset_right = 6.0

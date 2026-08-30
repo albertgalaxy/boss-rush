@@ -20,6 +20,7 @@ func _ready() -> void:
 	rogue_btn.pressed.connect(_swap_class.bind("rogue"))
 	start_btn.pressed.connect(_on_start_pressed)
 	dummy.hp_changed.connect(hud.set_boss_hp)
+	dummy.spawn_position = dummy.global_position
 	hud.boss_progress_label.text = "Training Dummy"
 	level_up_menu.visible = false
 	_refresh_best_run_label()

@@ -119,7 +119,8 @@ func _on_swipe_body_entered(body: Node) -> void:
 		body.take_damage(swipe_damage, self)
 
 func take_damage(amount: int, attacker: Node = null) -> void:
-	hp = max(hp - amount, 0)
+	var reduced := int(amount * (1.0 - damage_reduction_pct))
+	hp = max(hp - reduced, 0)
 	hp_changed.emit(hp, max_hp)
 	Juice.flash(sprite, Color(1, 1, 1), 0.08)
 	if hp <= max_hp * 0.5 and phase == 1:

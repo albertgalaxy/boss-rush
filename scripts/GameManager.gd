@@ -69,24 +69,26 @@ func record_run_result(bosses_defeated: int, level: int, depth: int) -> void:
 var class_stats := {
 	"warrior": {
 		"name": "Warrior",
-		"description": "High HP, strong melee, slow attack speed.",
+		"description": "High HP, strong melee, fast attack speed.",
 		"color": Color(0.85, 0.25, 0.25),
 		"max_hp": 140,
 		"attack_damage": 14,
-		"attack_cooldown": 0.45,
+		"attack_cooldown": 0.35,
 		"speed_mult": 0.95,
 		"ranged": false,
+		"crit_chance": 0.05,
 	},
 	"mage": {
 		"name": "Mage",
-		"description": "Fragile ranged spellcaster with area abilities.",
+		"description": "Fragile ranged spellcaster, slow attack speed.",
 		"color": Color(0.3, 0.5, 0.9),
 		"max_hp": 80,
 		"attack_damage": 9,
-		"attack_cooldown": 0.5,
+		"attack_cooldown": 0.65,
 		"speed_mult": 1.0,
 		"ranged": true,
 		"pierce": 1,
+		"crit_chance": 0.08,
 	},
 	"rogue": {
 		"name": "Rogue",
@@ -97,7 +99,7 @@ var class_stats := {
 		"attack_cooldown": 0.28,
 		"speed_mult": 1.25,
 		"ranged": false,
-		"crit_chance": 0.15,
+		"crit_chance": 0.125,
 	},
 }
 

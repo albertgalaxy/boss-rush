@@ -47,6 +47,7 @@ func _spawn_boss() -> void:
 	boss.name = "Boss"
 	add_child(boss)
 	boss.global_position = boss_spawn.global_position
+	boss.spawn_position = boss_spawn.global_position
 	if GameManager.endless_depth > 0:
 		_apply_endless_scaling(boss, GameManager.endless_depth)
 	boss.hp_changed.connect(hud.set_boss_hp)
@@ -73,9 +74,15 @@ func _apply_endless_scaling(b: BossBase, depth: int) -> void:
 		b.slam_damage = int(b.slam_damage * dmg_mult)
 	if "punch_damage" in b:
 		b.punch_damage = int(b.punch_damage * dmg_mult)
+	b.damage_reduction_pct = min(0.5, depth * 0.08)
+	b.knockback_resist = min(0.85, depth * 0.15)
 
 func _on_player_leveled_up() -> void:
 	hud.set_level(player.level)
+	if end_screen.visible:
+		# The run just ended in this same hit (boss or player death) — don't
+		# open a competing modal on top of it, the level is already recorded.
+		return
 	var choices := GameManager.get_random_choices(player, 3)
 	if choices.is_empty():
 		return
@@ -87,10 +94,12 @@ func _on_player_leveled_up() -> void:
 	)
 
 func _on_player_died() -> void:
+	level_up_menu.visible = false
 	get_tree().paused = true
 	end_screen.show_result(false, player.level, GameManager.boss_index, GameManager.boss_order.size(), player.acquired_abilities)
 
 func _on_boss_died() -> void:
+	level_up_menu.visible = false
 	GameManager.boss_index += 1
 	if GameManager.boss_index < GameManager.boss_order.size():
 		await get_tree().create_timer(1.2).timeout
