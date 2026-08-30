@@ -103,6 +103,12 @@ var class_stats := {
 	},
 }
 
+var class_attacks := {
+	"warrior": "LMB: Swing\nHold: Overhead Slam\nRMB: Riposte (counter)",
+	"mage": "LMB: Bolt\nHold: Charged Bolt (pierces)\nRMB: Flicker Bolt",
+	"rogue": "LMB: Strike\nHold: Execute (lunge)\nRMB: Flicker Strike",
+}
+
 var shared_abilities := {
 	"damage_up": {"name": "Sharpened Edge", "desc": "+35% attack damage"},
 	"max_hp_up": {"name": "Vitality", "desc": "+30 max HP"},

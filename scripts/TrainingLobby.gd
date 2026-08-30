@@ -11,6 +11,7 @@ const PlayerScene := preload("res://scenes/Player.tscn")
 @onready var rogue_btn: Button = $UI/Root/ClassRow/RogueButton
 @onready var start_btn: Button = $UI/Root/StartButton
 @onready var best_run_label: Label = $UI/Root/BestRunLabel
+@onready var attacks_label: Label = $UI/Root/AttacksLabel
 
 var player: Player
 
@@ -57,6 +58,7 @@ func _spawn_player(class_id: String) -> void:
 	hud.set_player_xp(player.xp, player.xp_to_next)
 	hud.set_abilities(player.acquired_abilities, GameManager.get_ability_pool())
 	hud.set_boss_hp(dummy.hp, dummy.max_hp)
+	attacks_label.text = GameManager.class_attacks.get(class_id, "")
 
 func _on_player_leveled_up() -> void:
 	hud.set_level(player.level)

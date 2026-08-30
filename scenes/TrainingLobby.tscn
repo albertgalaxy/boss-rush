@@ -79,6 +79,18 @@ theme_override_colors/font_color = Color(1, 0.85, 0.45, 0.85)
 text = ""
 horizontal_alignment = 1
 
+[node name="AttacksLabel" type="Label" parent="UI/Root"]
+anchor_left = 1.0
+offset_left = -220.0
+offset_top = 70.0
+offset_right = -20.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+autowrap_mode = 2
+text = ""
+horizontal_alignment = 0
+
 [node name="ClassRow" type="HBoxContainer" parent="UI/Root"]
 mouse_filter = 2
 anchor_left = 0.5
