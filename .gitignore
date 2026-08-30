@@ -4,6 +4,5 @@
 # macOS
 .DS_Store
 
-# Export artifacts you don't want tracked (docs/ for GitHub Pages is intentionally NOT ignored)
+# Godot editor's own scratch export folder, if used (docs/ for GitHub Pages is intentionally NOT ignored)
 export/
-*.pck
