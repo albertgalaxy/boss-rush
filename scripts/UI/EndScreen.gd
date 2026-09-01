@@ -38,10 +38,12 @@ func _on_continue() -> void:
 		cb.call()
 
 func _on_restart() -> void:
+	GameManager.clear_run_progress()
 	get_tree().paused = false
 	GameManager.start_run()
 	get_tree().reload_current_scene()
 
 func _on_menu() -> void:
+	GameManager.clear_run_progress()
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/TrainingLobby.tscn")

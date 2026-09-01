@@ -14,6 +14,7 @@ var boss_display_names := {
 var boss_order: Array[String] = []
 var boss_index := 0
 var endless_depth := 0
+var resume_pending := false
 
 var save_data := {
 	"best_bosses_defeated": 0,
@@ -23,6 +24,16 @@ var save_data := {
 
 func _ready() -> void:
 	load_save()
+	get_tree().auto_accept_quit = false
+	get_tree().root.close_requested.connect(_on_close_requested)
+
+func _on_close_requested() -> void:
+	var scene := get_tree().current_scene
+	if scene != null and scene.name == "Arena":
+		var player := get_tree().get_first_node_in_group("player")
+		if player != null and is_instance_valid(player):
+			save_run_progress(player)
+	get_tree().quit()
 
 func start_run() -> void:
 	var order: Array[String] = boss_ids.duplicate()
@@ -51,6 +62,18 @@ func save_game() -> void:
 		return
 	f.store_string(JSON.stringify(save_data))
 	f.close()
+	_sync_web_persistence()
+
+func _sync_web_persistence() -> void:
+	# In a Web export, user:// lives in an in-memory virtual filesystem;
+	# writes only survive a page reload once explicitly flushed to the
+	# browser's IndexedDB-backed storage. Godot doesn't do this
+	# automatically after every FileAccess write, so force it here.
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval(
+			"if (typeof FS !== 'undefined' && FS.syncfs) { FS.syncfs(false, function(err) {}); }",
+			true
+		)
 
 func record_run_result(bosses_defeated: int, level: int, depth: int) -> void:
 	var changed := false
@@ -65,6 +88,41 @@ func record_run_result(bosses_defeated: int, level: int, depth: int) -> void:
 		changed = true
 	if changed:
 		save_game()
+
+func save_run_progress(player: Player) -> void:
+	save_data["in_progress"] = {
+		"selected_class": selected_class,
+		"selected_boss": selected_boss,
+		"boss_order": boss_order,
+		"boss_index": boss_index,
+		"endless_depth": endless_depth,
+		"level": player.level,
+		"xp": player.xp,
+		"xp_to_next": player.xp_to_next,
+		"hp": player.hp,
+		"acquired_abilities": player.acquired_abilities,
+	}
+	save_game()
+
+func clear_run_progress() -> void:
+	if save_data.has("in_progress"):
+		save_data.erase("in_progress")
+		save_game()
+
+func has_saved_run() -> bool:
+	return save_data.get("in_progress", null) != null
+
+func begin_resume() -> void:
+	var data: Dictionary = save_data.get("in_progress", {})
+	selected_class = data.get("selected_class", selected_class)
+	selected_boss = data.get("selected_boss", selected_boss)
+	var order: Array[String] = []
+	for id in data.get("boss_order", []):
+		order.append(str(id))
+	boss_order = order
+	boss_index = int(data.get("boss_index", 0))
+	endless_depth = int(data.get("endless_depth", 0))
+	resume_pending = true
 
 var class_stats := {
 	"warrior": {

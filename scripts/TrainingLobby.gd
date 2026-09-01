@@ -10,6 +10,7 @@ const PlayerScene := preload("res://scenes/Player.tscn")
 @onready var mage_btn: Button = $UI/Root/ClassRow/MageButton
 @onready var rogue_btn: Button = $UI/Root/ClassRow/RogueButton
 @onready var start_btn: Button = $UI/Root/StartButton
+@onready var resume_btn: Button = $UI/Root/ResumeButton
 @onready var best_run_label: Label = $UI/Root/BestRunLabel
 @onready var attacks_label: Label = $UI/Root/AttacksLabel
 
@@ -20,6 +21,8 @@ func _ready() -> void:
 	mage_btn.pressed.connect(_swap_class.bind("mage"))
 	rogue_btn.pressed.connect(_swap_class.bind("rogue"))
 	start_btn.pressed.connect(_on_start_pressed)
+	resume_btn.pressed.connect(_on_resume_pressed)
+	resume_btn.visible = GameManager.has_saved_run()
 	dummy.hp_changed.connect(hud.set_boss_hp)
 	dummy.spawn_position = dummy.global_position
 	hud.boss_progress_label.text = "Training Dummy"
@@ -77,3 +80,7 @@ func _on_player_died() -> void:
 
 func _on_start_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/BossSelect.tscn")
+
+func _on_resume_pressed() -> void:
+	GameManager.begin_resume()
+	get_tree().change_scene_to_file("res://scenes/Arena.tscn")

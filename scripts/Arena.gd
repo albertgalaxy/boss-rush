@@ -24,6 +24,10 @@ func _ready() -> void:
 	player.leveled_up.connect(_on_player_leveled_up)
 	player.died.connect(_on_player_died)
 
+	if GameManager.resume_pending:
+		_restore_player_state()
+		GameManager.resume_pending = false
+
 	_spawn_boss()
 
 	var class_def: Dictionary = GameManager.class_stats.get(GameManager.selected_class, {})
@@ -35,6 +39,15 @@ func _ready() -> void:
 	level_up_menu.visible = false
 	end_screen.visible = false
 	pause_menu.visible = false
+
+func _restore_player_state() -> void:
+	var data: Dictionary = GameManager.save_data.get("in_progress", {})
+	for id in data.get("acquired_abilities", []):
+		player.apply_ability(str(id))
+	player.level = int(data.get("level", player.level))
+	player.xp = int(data.get("xp", player.xp))
+	player.xp_to_next = int(data.get("xp_to_next", player.xp_to_next))
+	player.hp = clampi(int(data.get("hp", player.hp)), 1, player.max_hp)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and not get_tree().paused:
@@ -57,6 +70,7 @@ func _spawn_boss() -> void:
 		hud.boss_progress_label.text = "Endless Depth %d" % GameManager.endless_depth
 	else:
 		hud.set_boss_progress(GameManager.boss_index + 1, GameManager.boss_order.size())
+	GameManager.save_run_progress(player)
 
 func _apply_endless_scaling(b: BossBase, depth: int) -> void:
 	var hp_mult := 1.0 + depth * 0.25
@@ -91,6 +105,7 @@ func _on_player_leveled_up() -> void:
 		player.apply_ability(id)
 		hud.set_abilities(player.acquired_abilities, GameManager.get_ability_pool())
 		get_tree().paused = false
+		GameManager.save_run_progress(player)
 	)
 
 func _on_player_died() -> void:

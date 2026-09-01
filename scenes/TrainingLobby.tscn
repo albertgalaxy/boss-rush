@@ -91,6 +91,16 @@ autowrap_mode = 2
 text = ""
 horizontal_alignment = 0
 
+[node name="ResumeButton" type="Button" parent="UI/Root"]
+anchor_left = 1.0
+offset_left = -220.0
+offset_top = 160.0
+offset_right = -20.0
+offset_bottom = 200.0
+focus_mode = 0
+visible = false
+text = "Resume Run"
+
 [node name="ClassRow" type="HBoxContainer" parent="UI/Root"]
 mouse_filter = 2
 anchor_left = 0.5
