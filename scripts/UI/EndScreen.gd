@@ -15,6 +15,11 @@ func _ready() -> void:
 
 func show_result(won: bool, level: int = 1, bosses_beaten: int = 0, bosses_total: int = 0, ability_ids: Array = [], continue_callback: Callable = Callable()) -> void:
 	GameManager.record_run_result(bosses_beaten, level, GameManager.endless_depth)
+	if not won:
+		# The run is over the instant death is registered — don't leave a
+		# resumable checkpoint lying around just because the player hasn't
+		# clicked through this screen yet (e.g. if they close the game here).
+		GameManager.clear_run_progress()
 	label.text = "Victory!" if won else "You Died"
 	var pool := GameManager.get_ability_pool()
 	var names: Array = []
