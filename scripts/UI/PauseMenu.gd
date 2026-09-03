@@ -2,11 +2,14 @@ extends CanvasLayer
 
 @onready var resume_button: Button = $Panel/VBoxContainer/ResumeButton
 @onready var restart_button: Button = $Panel/VBoxContainer/RestartButton
+@onready var controls_button: Button = $Panel/VBoxContainer/ControlsButton
 @onready var menu_button: Button = $Panel/VBoxContainer/MenuButton
+@onready var controls_menu: CanvasLayer = $ControlsMenu
 
 func _ready() -> void:
 	resume_button.pressed.connect(_on_resume)
 	restart_button.pressed.connect(_on_restart)
+	controls_button.pressed.connect(controls_menu.open)
 	menu_button.pressed.connect(_on_menu)
 	visible = false
 

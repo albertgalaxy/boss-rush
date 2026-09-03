@@ -11,8 +11,10 @@ const PlayerScene := preload("res://scenes/Player.tscn")
 @onready var rogue_btn: Button = $UI/Root/ClassRow/RogueButton
 @onready var start_btn: Button = $UI/Root/StartButton
 @onready var resume_btn: Button = $UI/Root/ResumeButton
+@onready var controls_btn: Button = $UI/Root/ControlsButton
 @onready var best_run_label: Label = $UI/Root/BestRunLabel
 @onready var attacks_label: Label = $UI/Root/AttacksLabel
+@onready var controls_menu: CanvasLayer = $ControlsMenu
 
 var player: Player
 
@@ -22,6 +24,7 @@ func _ready() -> void:
 	rogue_btn.pressed.connect(_swap_class.bind("rogue"))
 	start_btn.pressed.connect(_on_start_pressed)
 	resume_btn.pressed.connect(_on_resume_pressed)
+	controls_btn.pressed.connect(controls_menu.open)
 	resume_btn.visible = GameManager.has_saved_run()
 	dummy.hp_changed.connect(hud.set_boss_hp)
 	dummy.spawn_position = dummy.global_position

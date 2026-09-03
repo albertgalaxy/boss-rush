@@ -1,6 +1,7 @@
 extends Node
 
 const SAVE_PATH := "user://save_data.json"
+const REBINDABLE_ACTIONS: Array[String] = ["move_left", "move_right", "jump", "dash", "attack", "quick_move"]
 
 var selected_class: String = "warrior"
 var selected_boss: String = "brute"
@@ -22,8 +23,13 @@ var save_data := {
 	"best_endless_depth": 0,
 }
 
+var default_keybind_events := {}
+
 func _ready() -> void:
+	for action in REBINDABLE_ACTIONS:
+		default_keybind_events[action] = InputMap.action_get_events(action).duplicate()
 	load_save()
+	apply_saved_keybinds()
 	get_tree().auto_accept_quit = false
 	get_tree().root.close_requested.connect(_on_close_requested)
 
@@ -74,6 +80,48 @@ func _sync_web_persistence() -> void:
 			"if (typeof FS !== 'undefined' && FS.syncfs) { FS.syncfs(false, function(err) {}); }",
 			true
 		)
+
+func _event_to_dict(event: InputEvent) -> Dictionary:
+	if event is InputEventKey:
+		return {"type": "key", "physical_keycode": event.physical_keycode}
+	if event is InputEventMouseButton:
+		return {"type": "mouse", "button_index": event.button_index}
+	return {}
+
+func _dict_to_event(d: Dictionary) -> InputEvent:
+	match d.get("type", ""):
+		"key":
+			var e := InputEventKey.new()
+			e.physical_keycode = int(d.get("physical_keycode", 0))
+			return e
+		"mouse":
+			var e := InputEventMouseButton.new()
+			e.button_index = int(d.get("button_index", 0))
+			return e
+	return null
+
+func save_keybinds() -> void:
+	var data := {}
+	for action in REBINDABLE_ACTIONS:
+		var events := []
+		for event in InputMap.action_get_events(action):
+			var d := _event_to_dict(event)
+			if not d.is_empty():
+				events.append(d)
+		data[action] = events
+	save_data["keybinds"] = data
+	save_game()
+
+func apply_saved_keybinds() -> void:
+	var data: Dictionary = save_data.get("keybinds", {})
+	for action in REBINDABLE_ACTIONS:
+		if not data.has(action):
+			continue
+		InputMap.action_erase_events(action)
+		for d in data[action]:
+			var event := _dict_to_event(d)
+			if event != null:
+				InputMap.action_add_event(action, event)
 
 func record_run_result(bosses_defeated: int, level: int, depth: int) -> void:
 	var changed := false

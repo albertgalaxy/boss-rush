@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/UI/PauseMenu.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/UI/ControlsMenu.tscn" id="2"]
 
 [node name="PauseMenu" type="CanvasLayer"]
 process_mode = 3
@@ -43,6 +44,12 @@ text = "Resume"
 process_mode = 3
 text = "Restart Run"
 
+[node name="ControlsButton" type="Button" parent="Panel/VBoxContainer"]
+process_mode = 3
+text = "Controls"
+
 [node name="MenuButton" type="Button" parent="Panel/VBoxContainer"]
 process_mode = 3
 text = "Return to Training"
+
+[node name="ControlsMenu" parent="." instance=ExtResource("2")]
